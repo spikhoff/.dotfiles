@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "*.uproject": "json"
+    },
+    "editor.minimap.enabled": false,
+    "telemetry.enableCrashReporter": false,
+    "telemetry.enableTelemetry": false,
+    "remote.containers.dockerPath": "/var/home/me/.local/bin/spawn-podman",
+    "workbench.startupEditor": "newUntitledFile",
+    "workbench.editorAssociations": [
+        {
+            "viewType": "jupyter.notebook.ipynb",
+            "filenamePattern": "*.ipynb"
+        }
+    ],
+    "gitlens.mode.active": "zen"
+}

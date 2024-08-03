@@ -1,0 +1,14 @@
+{
+    "remote.containers.copyGitConfig": false,
+    "remote.containers.gitCredentialHelperConfigLocation": "none",
+	"terminal.integrated.shell.linux": "/bin/bash",
+	"terminal.integrated.shellArgs.linux": [
+		"--caps=",
+		"--",
+		"-c",
+		"exec \"$@\"",
+		"/bin/sh",
+		"/bin/bash",
+		"-l"
+	]
+}

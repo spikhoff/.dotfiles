@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Unreal Engine 4
+Exec=toolbox run --container fedora-toolbox-33 /var/home/me/projects/UnrealEngine/Engine/Binaries/Linux/UE4Editor
+Type=Application
+Icon=/var/home/me/projects/UnrealEngine/Engine/Source/Programs/UnrealVersionSelector/Private/Linux/Resources/Icon.png
+
