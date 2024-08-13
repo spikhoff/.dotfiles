@@ -79,3 +79,5 @@ ln -s ~/.config/Epic ~/.var/app/com.jetbrains.Rider/config/Epic
 # https://github.com/fedora-silverblue/issue-tracker/issues/536
 rpm-ostree override remove noopenh264 --install openh264 --install mozilla-openh264
 
+sudo rpm-ostree rebase fedora/rawhide/x86_64/silverblue
+
