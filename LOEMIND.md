@@ -1,36 +1,90 @@
+# LOEMIND — System notes and steps
+
+Lühimärkmed süsteemi seadistamiseks, paigaldamiseks ja mõnede probleemide lahendamiseks.
+
+## Kiirkäsud (paketid)
+Algne dnf install käsk, vajalikud paketid:
+```bash
 sudo dnf install make xdg-user-dirs xdg-utils libXrandr mesa-vulkan-drivers libglvnd-glx mesa-dri-drivers nss atk at-spi2-atk libXcomposite libXdamage pango pipewire-libs mesa-libgbm
+```
 
-# for vscode intellisense
-kernel-headers glibc-headers
+VSCode IntelliSense'iks:
+```bash
+sudo dnf install kernel-headers glibc-headers
+```
 
-# c#
-dotnet
+C#/.NET:
+```bash
+# Install .NET runtime / SDK according to distro instructions
+sudo dnf install dotnet
+```
 
-# bugs
-* removing and re-creating network connection enables ipv6 privacy
-
+## Üldised sammud ja uuendused
+- Aeg-ajalt: uuenda ostree baasi:
+```bash
 rpm-ostree upgrade
+```
 
-# efficency
-rpm-ostree kargs --editor
+- Kontrolli admin config diff'i:
+```bash
+sudo ostree admin config-diff
+```
+
+## Tuntud vead / töörad
+- Võrgukonksude probleem: eemaldamine ja ühenduse uuesti loomine võib lubada IPv6 privacy (märkmete järgi).
+- Virt fix (Libvirt grupp puudub, lahendus allpool).
+
+## Energiefektiivsus & jõudlus (AMD)
+Kernel args (korrigeeri vastavalt vajadusele):
+```bash
+sudo rpm-ostree kargs --editor
+# lisa näiteks
 amd_pstate.shared_mem=1 amdgpu.ppfeaturemask=0xfff7ffff
-echo "manual" > /sys/class/drm/card1/device/power_dpm_force_performance_level
-echo "3" > /sys/class/drm/card1/device/pp_power_profile_mode
+```
 
-# LayeredPackages:
-mozilla-openh264 nmap picocom tcpdump wireshark corectrl corectrl kernel-tools virt-manager
+GPU jõudluse sundimine (näide card1 — kohanda järjestuse):
+```bash
+# sundi manuaalset toitehalduse taset (vajab root)
+echo "manual" | sudo tee /sys/class/drm/card1/device/power_dpm_force_performance_level
+# valikuline: power profile
+echo "3" | sudo tee /sys/class/drm/card1/device/pp_power_profile_mode
+```
 
-# virtfix https://bugzilla.redhat.com/show_bug.cgi?id=1919994
+## LayeredPackages
+Soovitused rpm-ostree LayeredPackages jaoks:
+- mozilla-openh264
+- nmap
+- picocom
+- tcpdump
+- wireshark
+- corectrl
+- corectrl-kernel-tools
+- virt-manager
+
+(Näpunäide: lisa täpsed paketid / nimed vastavalt distro versioonile.)
+
+## Virt (libvirt) grupi parandamine
+Kui libvirt grupp puudub ja virt ei tööta:
+```bash
+# Leia libvirt real kasutamiseks
 grep -E '^libvirt:' /usr/lib/group >> /etc/group
-usermod -aG libvirt username
+# Lisa oma kasutaja gruppi (kohanda username)
+sudo usermod -aG libvirt username
+```
 
-# setup
-dark mode, 120hz, nightlight, screenlock 15m, 
-
-# net check
+## Võrgukontroll / NetworkManager
+Keela Connectivity Check, kui see segab võrguoleku kontrolli:
+```bash
 busctl set-property org.freedesktop.NetworkManager /org/freedesktop/NetworkManager org.freedesktop.NetworkManager ConnectivityCheckEnabled b false
+```
 
-# flatpak list
+## Kasutaja-eelistused / Setup
+- Üldine: tumerežiim (dark mode), 120 Hz kui võimalik, night light, screen lock 15 min
+- Konfigureeri display ja power seaded vastavalt rändlusele ja aku elueale.
+
+## Flatpak (süsteemi paigaldatud)
+Alljärgnevalt flatpak list, nagu salvestatud süsteemist:
+```
 Transmission                             com.transmissionbt.Transmission                        3.00                 stable       flathub   system
 Visual Studio Code                       com.visualstudio.code                                  1.71.2-1663191218    stable       flathub   system
 Shortwave                                de.haeckerfelix.Shortwave                              3.1.0                stable       flathub   system
@@ -66,11 +120,14 @@ QtSNI                                    org.kde.PlatformTheme.QtSNI            
 QGnomePlatform-decoration                org.kde.WaylandDecoration.QGnomePlatform-decoration                         5.15-21.08   flathub   system
 LibreOffice                              org.libreoffice.LibreOffice                            7.4.2.3              stable       flathub   system
 VLC                                      org.videolan.VLC                                       3.0.17.4             stable       flathub   syste
+```
 
-firefox...
+> Märkus: siin on lõpprida katkine ("VLC ... syste") nagu originaalis — vajadusel uuenda täieliku nimekirjaga.
 
-sudo ostree admin config-diff
+## Meiliside
+- Märge: "email migra" — meeldetuletus migreerimise või meilide ülesseadmise kohta.
 
-##################
-
-email migra
+## Märkmed / TODO
+- Kontrollida flatpaki täielikku väljatrükki (VLC rida lõikunud).
+- Täpsustada LayeredPackages nimed täpsete paketi nimedega kui vaja.
+- Lisada täpsemad sammud .NET paigaldamiseks, kui distributsioon ei paku lihtsat dotnet paketti.
