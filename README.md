@@ -1,44 +1,100 @@
-# init
-resolution 144hz
-night-light
-configure left bar, add terminal etc.
-configure firefox (big job)
-configure evolution
- - ublock
- 	- add annoyance list
+# Init / Setup
 
-terminal colors -> solarized
+This repository contains my personal dotfiles and a set of notes and commands I use to set up a new Fedora Silverblue machine and related development tools. The goal of this README is to document the manual steps I normally run after a fresh install.
 
-login github (requires flathub, keepass)
+## Quick checklist
 
-clone .dotfiles
-cp ~/.bashrc .dotfiles/bash
-check diff
+- Set hostname
+- Configure display (144 Hz) and night light
+- Configure GNOME (left dock, terminal, Firefox, Evolution)
+- Install developer tools (stow, clang, make, cmake, etc.)
+- Configure Flatpak/Flathub and install apps (VS Code)
+- Clone this dotfiles repo and apply stow
 
+## Clone this repo
 
-
+```bash
 git clone git@github.com:spikhoff/.dotfiles.git
+cd .dotfiles
+```
 
-# next
-hostnamectl set-hostname raal
+Tip: I sometimes copy parts of my current shell configuration into the repo for versioning:
+
+```bash
+cp ~/.bashrc .dotfiles/bash
+# then check diffs and commit as needed
+```
+
+## Essential commands (Fedora / Silverblue)
+
+Set hostname:
+
+```bash
+sudo hostnamectl set-hostname raal
+```
+
+Mouse acceleration profile:
+
+```bash
 gsettings set org.gnome.desktop.peripherals.mouse accel-profile flat
-cp /home/$USER/.config/monitors.xml to /var/lib/gdm/.config/monitors.xml
+```
 
+Copy monitor configuration for GDM (if needed):
+
+```bash
+sudo cp /home/$USER/.config/monitors.xml /var/lib/gdm/.config/monitors.xml
+```
+
+Enter toolbox and install stow (used to manage dotfiles):
+
+```bash
 toolbox enter
 sudo dnf install stow
 stow *
+```
 
+Add Flathub and install VS Code (Flatpak):
+
+```bash
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak install flathub com.visualstudio.code
 code --install-extension ms-vscode-remote.remote-containers
+```
 
-# clone prj
+After a reboot (example install steps):
 
-# after reboot
+```bash
 toolbox enter
 sudo chmod 777 /root
 sudo dnf install clang make mesa-dri-drivers pulseaudio-libs xdg-user-dirs xrandr
+```
 
+Useful tool: WoeUSB (create Windows installer USB):
+
+```bash
+sudo dnf install -y WoeUSB
+sudo woeusb --target-filesystem NTFS --device Win10_21H2_English_x64.iso /dev/sda
+```
+
+Symlink example for JetBrains Rider Flatpak config:
+
+```bash
+ln -s ~/.config/Epic ~/.var/app/com.jetbrains.Rider/config/Epic
+```
+
+Override rpm-ostree packages (Silverblue example):
+
+```bash
+# replace noopenh264 with openh264 and mozilla-openh264
+rpm-ostree override remove noopenh264 --install openh264 --install mozilla-openh264
+sudo rpm-ostree rebase fedora/rawhide/x86_64/silverblue
+```
+
+## Install notes / history
+
+I keep a chronological install log of commands and notes. The raw lines below are preserved for reference:
+
+```text
 # 2021
     30 | -y install dos2unix       | 2021-03-12 21:26 | Install        |    1   
     29 | -y install qt-devel       | 2021-03-12 21:26 | Install        |   37   
@@ -70,14 +126,12 @@ sudo dnf install clang make mesa-dri-drivers pulseaudio-libs xdg-user-dirs xrand
      3 | -y install bash-completio | 2021-02-12 17:59 | I, U           |  168 EE
      2 | -y reinstall acl bash cur | 2021-02-12 17:59 | I, R           |   19   
      1 |                           | 2021-01-06 09:48 | Install        |  144   
+```
 
-dnf install -y WoeUSB
-sudo woeusb --target-filesystem NTFS --device Win10_21H2_English_x64.iso /dev/sda
+## TODO / Next steps
 
-ln -s ~/.config/Epic ~/.var/app/com.jetbrains.Rider/config/Epic
-
-# https://github.com/fedora-silverblue/issue-tracker/issues/536
-rpm-ostree override remove noopenh264 --install openh264 --install mozilla-openh264
-
-sudo rpm-ostree rebase fedora/rawhide/x86_64/silverblue
-
+- Configure Firefox (extensions and uBlock filters)
+- Configure Evolution mail client
+- Set up terminal color scheme (Solarized)
+- Sign in to GitHub (Flatpak + KeePass notes)
+- Organize dotfiles and create stow packages for each app
