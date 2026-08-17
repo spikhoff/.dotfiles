@@ -1,0 +1,1 @@
+sudo dnf install nss dbus-libs atk at-spi2-atk libXcomposite libXdamage libXrandr libxkbcommon pango alsa-lib
